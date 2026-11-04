@@ -1,0 +1,1 @@
+Android-Energieverwaltung: Wakelocks, Alarme & Services kontrollieren (Xposed).

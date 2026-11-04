@@ -1,0 +1,294 @@
+<resources>
+    <string name="app_name">NoWakeLock</string>
+    <string name="xposeddescription">For blocking wakelocks</string>
+    <string name="navigation_view_header_title">NoWakeLock</string>
+    <string name="active">Module is not active</string>
+    <string name="backup">Backup complete</string>
+    <string name="restore">Restore complete</string>
+    <string name="BackupAndRestore">Backup and restore</string>
+    <string name="clipboard">Copy to clipboard</string>
+    <string name="test">Test Mode</string>
+    <string name="android">Android System</string>
+    <string name="settings">Settings</string>
+    <string name="sync">Sync</string>
+    <string name="recordFlag_title">Record data</string>
+    <string name="recordFlag_summary">Record device wake-up data</string>
+    <string name="Save">Save</string>
+    <string name="updateST_summary">Configuration sync interval (seconds)</string>
+    <string name="updateST_title">Sync setting</string>
+    <string name="updateDb_title">Data synchronization</string>
+    <string name="updateDb_summary">Wake-up data sync interval (seconds)</string>
+    <string name="other">Other</string>
+    <string name="powerFlag_title">Reset count</string>
+    <string name="powerFlag_summary">Reset count when charged</string>
+    <string name="theme">Theme</string>
+    <string name="theme_list">General theme</string>
+    <string name="light_theme_name">Light</string>
+    <string name="dark_theme_name">Dark</string>
+    <string name="black_theme_name">Black (AMOLED)</string>
+    <string name="system_theme_name">Follow System</string>
+    <string name="channel_name">Background Services</string>
+    <string name="channel_description">You can ignore or hide this notification</string>
+    <string name="channel_id">nowakelock</string>
+    <string name="notification_title">Background Services</string>
+    <string name="notification_text">NoWakeLock needs a service to maintain the database. You can ignore or hide this notification</string>
+    <string name="Count">Count</string>
+    <string name="BlockCount">Block Count</string>
+    <string name="CountTime">Count Time</string>
+    <string name="BlockCountTime">Block Count Time</string>
+    <string name="search_title">Search</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_filter_user_app">User apps</string>
+    <string name="menu_filter_system_app">System app</string>
+    <string name="menu_filter_modified">Modified</string>
+    <string name="menu_filter_all_app">All apps</string>
+    <string name="menu_filter_count">Order by Count</string>
+    <string name="menu_filter_name">Order by Name</string>
+    <string name="menu_filter_countime">Order by Count Time</string>
+
+    <string name="WakeLock">WakeLock</string>
+    <string name="Alarm">Alarm</string>
+    <string name="Service">Service</string>
+    <string name="Apps">Apps</string>
+    <string name="help">Help</string>
+    <string name="help_instructions">        click the application icon or name to enter component settings and configure blocking.
+        <![CDATA[<br><br>]]> Serious warning: do not restrict system applications, as this may cause unpredictable consequences.
+        <![CDATA[<br><br>]]>For more information see <![CDATA[<a href="https://github.com/Jasper-1024/NoWakeLock/blob/dev/README.md">Application Introduction</a>]]>;
+           <![CDATA[<a href="https://github.com/Jasper-1024/NoWakeLock/blob/dev/README/FAQ.md">FAQ</a>]]>;
+    </string>
+    <string name="help_contact">Contact:
+
+            If you have any questions or encounter bugs during use, you can email me or create a new issue.
+        
+
+        Issue: https://github.com/Jasper-1024/NoWakeLock/issues
+        
+
+        JasperHale: ljy087621@gmail.com</string>
+    <string name="ATIText">Allow interval</string>
+    <string name="FlagText">Allow</string>
+    <string name="wakelockFlagText">Allow wakelock</string>
+    <string name="ATIUnit">sec</string>
+    <string name="Re_Alarm">Alarm Block Regular expression</string>
+    <string name="Re_Wakelock">Wakelock Block Regular expression</string>
+    <string name="name">Name</string>
+    <string name="application">Application</string>
+    <string name="statistics">Statistics</string>
+    <string name="backup_title">Create new backup file</string>
+    <string name="backup_summary">Backup settings of installed app into file</string>
+    <string name="restore_title">Restore from backup file</string>
+    <string name="restore_summary">Restoring from a backup file will overwrite the current settings</string>
+    <string name="action_allow_all">Allow all</string>
+    <string name="action_block_all">Block all</string>
+    <string name="action_select_all">Select all</string>
+    <string name="action_select_inverse">"Select inverse"</string>
+    <string name="action_set_ATI">"Set allow time interval"</string>
+    <string name="database">Database</string>
+    <string name="clear_summary">Clear inactive records when resetting count</string>
+    <string name="clear_title">Clear inactive records</string>
+    <string name="re_hint">One rule per line, press Enter for new rule</string>
+    <string name="user_owner">Primary user</string>
+    <string name="user_work">Work profile</string>
+    <string name="user_name">User</string>
+    <string name="user">User</string>
+    <string name="experimental">Experimental Features</string>
+    <string name="Debug">Debug mode</string>
+    <string name="Debug_summary">Enable this when you encounter a wakelock/alarm/service that is not logged. Export the full log in Xposed and send it to me through any channel to troubleshoot the problem.</string>
+    <string-array name="scopes" translatable="false">
+        <item>android</item>
+        <item>com.android.providers.settings</item>
+        <item>com.js.nowakelock</item>
+    </string-array>
+
+    <!-- Add these new string resources to your existing strings.xml file -->
+
+    <!-- Basic navigation and titles -->
+    <string name="da_detail_title">Device Automation Details</string>
+    <string name="navigate_back">Back</string>
+    <string name="more_options">More options</string>
+
+    <!-- Statistics card -->
+    <string name="stat_total_count">Count</string>
+    <string name="stat_blocked_count">Blocked</string>
+    <string name="stat_total_time">Total time</string>
+    <string name="stat_saved_time">Saved time</string>
+
+    <!-- Info card -->
+    <string name="about_this_item">About this item</string>
+    <string name="no_info_wakelock">No additional information available for this wakelock.</string>
+    <string name="no_info_alarm">No additional information available for this alarm.</string>
+    <string name="no_info_service">No additional information available for this service.</string>
+    <string name="no_info_unknown">No related information available.</string>
+    <string name="recommendations">Recommendations</string>
+
+    <!-- Settings card -->
+    <string name="settings_title">Settings</string>
+    <string name="allow_this_item">Block this item</string>
+    <string name="allow_this_item_desc">Block this item from triggering</string>
+    <string name="block_during_sleep">Only block during sleep</string>
+    <string name="block_during_screen_off">Only block when screen is off</string>
+    <string name="allowed_time_interval">Allowed time interval</string>
+    <string name="allowed_time_interval_desc">Time interval to allow this item to run</string>
+    <string name="seconds">s</string>
+
+    <!-- Timeline card -->
+    <string name="activity_timeline">Activity Timeline</string>
+    <string name="past_24_hours">Past 24 hours</string>
+    <string name="total">Total</string>
+    <string name="blocked">Blocked</string>
+
+    <!-- Activity list card -->
+    <string name="recent_activities">Recent Activities</string>
+    <string name="no_recent_wakelock_activities">No recent wakelock activities.</string>
+    <string name="no_recent_alarm_activities">No recent alarm activities.</string>
+    <string name="no_recent_service_activities">No recent service activities.</string>
+    <string name="no_recent_activities">No recent activities.</string>
+    <string name="status_allowed">Allowed</string>
+    <string name="status_blocked">Blocked</string>
+    <string name="duration_separator"> • Duration: %s</string>
+
+    <!-- Error handling -->
+    <string name="error_loading_data">Error loading data. Please try again.</string>
+    <string name="allow_wakelock">Allow Wakelock</string>
+    <string name="allow_wakelock_desc">Allow this wakelock to trigger</string>
+    <string name="allow_alarm">Allow Alarm</string>
+    <string name="allow_alarm_desc">Allow this alarm to trigger</string>
+    <string name="allow_service">Allow Service</string>
+    <string name="allow_service_desc">Allow this service start</string>
+
+    <string name="allow_screenOff_wakelock">Allow Wakelock Screen Off</string>
+    <string name="allow_screenOff_wakelock_desc">Allow this wakelock trigger when the screen is off</string>
+    <string name="allow_screenOff_alarm">Allow Alarm Screen Off</string>
+    <string name="allow_screenOff_alarm_desc">Allow this alarm trigger when the screen is off</string>
+    <string name="allow_screenOff_service">Allow Service Screen Off</string>
+    <string name="allow_screenOff_service_desc">Allow this service start when the screen is off</string>
+    <string name="now">Now</string>
+
+    <!-- Settings strings -->
+    <string name="settings_interface">Interface</string>
+    <string name="settings_data_management">Data Management</string>
+    <string name="settings_backup">Backup &amp; Restore</string>
+    <string name="settings_experimental">Experimental Features</string>
+    <string name="language">Language</string>
+    <string name="cancel">Cancel</string>
+    
+    <!-- Power Connection and Clear Data settings -->
+    <string name="power_connection_detection">Power Connection Detection</string>
+    <string name="power_connection_detection_desc">Reset counters when power is connected or disconnected</string>
+    <string name="clear_inactive_data">Clear Inactive Data</string>
+    <string name="clear_inactive_data_desc">Remove data for uninstalled apps when resetting counters</string>
+    <string name="clear_all_data">Clear All Data</string>
+    <string name="clear">Clear</string>
+    
+    <!-- Experimental features -->
+    <string name="debug_mode">Debug Mode</string>
+    <string name="debug_mode_desc">Enable detailed logging for troubleshooting. Enable only when needed for diagnosing issues.</string>
+    
+    <!-- Backup settings -->
+    <string name="create_backup">Create Backup</string>
+    <string name="create_backup_desc">Save your settings and data to a file</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="restore_backup_desc">Load settings and data from a backup file</string>
+    <string name="backup_success">Backup created successfully</string>
+    <string name="backup_failed">Failed to create backup</string>
+    <string name="restore_success">Backup restored successfully</string>
+    <string name="restore_failed">Failed to restore backup</string>
+    
+    <!-- Language settings -->
+    <string name="english_language_name">English</string>
+    <string name="chinese_language_name">中文</string>
+    <string name="traditional_chinese_language_name">繁體中文</string>
+    <string name="french_language_name">Français</string>
+    <string name="german_language_name">Deutsch</string>
+    <string name="system_language_name">Follow System</string>
+
+    <string name="app_detail_title">Application Details</string>
+    <string name="back">Back</string>
+    <string name="app_statistics">Application Statistics</string>
+    <string name="wakelock_statistics">Wakelock Statistics</string>
+    <string name="alarm_statistics">Alarm Statistics</string>
+    <string name="service_statistics">Service Statistics</string>
+    <string name="total_wakelocks">Count</string>
+    <string name="blocked_wakelocks">Blocked</string>
+    <string name="total_alarms">Count</string>
+    <string name="blocked_alarms">Blocked</string>
+    <string name="total_services">Count</string>
+    <string name="blocked_services">Blocked</string>
+    <string name="total_time">Time</string>
+    <string name="saved_time">Saved</string>
+    <string name="allowed">Allowed</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="error_loading_app_detail">Error loading application details</string>
+    
+    <!-- App Settings Strings -->
+    <string name="app_settings">App Settings</string>
+    <string name="block_settings">Global Block Settings</string>
+    <string name="wakelock_patterns">Wakelock Patterns</string>
+    <string name="alarm_patterns">Alarm Patterns</string>
+    <string name="service_patterns">Service Patterns</string>
+    <string name="allow_wakelocks">Allow Wakelocks</string>
+    <string name="allow_wakelocks_description">Allow this app to acquire wakelocks</string>
+    <string name="allow_alarms">Allow Alarms</string>
+    <string name="allow_alarms_description">Allow this app to schedule alarms</string>
+    <string name="allow_services">Allow Services</string>
+    <string name="allow_services_description">Allow this app to start services</string>
+    <string name="add_pattern">Add Pattern</string>
+    <string name="pattern">Pattern</string>
+    <string name="invalid_regex">Invalid Regex</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="sort_by">Sort by:</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_count">Count</string>
+    <string name="sort_time">Time</string>
+    <string name="menu_filter_all">All</string>
+    <string name="menu_filter_blocked">Blocked</string>
+    <string name="menu_filter_allowed">Allowed</string>
+    <string name="allow">Allow</string>
+    <string name="screen_off">Screen Off</string>
+    <string name="timeout">Time</string>
+
+    <!-- Module check strings -->
+    <string name="module_check">Module Status Check</string>
+    <string name="module_check_description">Verify if module is active and working correctly</string>
+    <string name="check">Check</string>
+    <string name="refresh">Refresh</string>
+    <string name="module_status">Xposed Status</string>
+    <string name="hook_status">Hook Status</string>
+    <string name="config_path">Configuration backend</string>
+    <string name="overall_status">Overall Status</string>
+    <string name="normal_status">Normal</string>
+    <string name="warning_status">Warning</string>
+    <string name="error_status">Error</string>
+    <string name="module_active">Module is active</string>
+    <string name="module_inactive">Module is not active</string>
+    <string name="module_version">Version: %s</string>
+    <string name="wakelock_hook">Wakelock Hook</string>
+    <string name="alarm_hook">Alarm Hook</string>
+    <string name="service_hook">Service Hook</string>
+    <string name="hook_working">Working</string>
+    <string name="hook_not_working">Not working</string>
+    <string name="config_path_valid">A configuration backend is readable</string>
+    <string name="config_path_invalid">No configuration backend is readable</string>
+    <string name="config_backend_active">Active backend: %s</string>
+    <string name="loading">Loading…</string>
+    <string name="error_checking_module">Error checking module status</string>
+    <string name="status_normal_description">All module components are working properly</string>
+    <string name="status_warning_description">Module is active but some hooks are not working</string>
+    <string name="status_error_description">Module is inactive or no configuration backend is readable</string>
+    <string name="fix_module_inactive">Activate the module in Xposed Manager and restart device</string>
+    <string name="fix_hook_not_working">Restart device to initialize hooks</string>
+    <string name="fix_config_path">Open NoWakeLock once to publish settings, then restart the hooked process or device</string>
+    <string name="experimental_features">Experimental Features</string>
+
+    <!-- Data management and backup messages -->
+    <string name="data_cleared">All data has been cleared</string>
+    <string name="clear_data_failed">Failed to clear data: %1$s</string>
+    <string name="backup_created">Backup created successfully</string>
+    <string name="backup_creation_failed">Failed to create backup: %1$s</string>
+    <string name="config_publish_pending">Settings saved; framework synchronization is pending. Check module status.</string>
+    <string name="config_restore_publish_pending">Backup restored; framework synchronization is pending. Check module status.</string>
+    <string name="config_diagnostics">Configuration and hook diagnostics</string>
+    <string name="config_revision_status">Published: %1$s · Read here: %2$s</string>
+    <string name="config_pending">Awaiting process confirmation</string>
+</resources>

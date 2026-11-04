@@ -1,0 +1,222 @@
+name: Release Upload
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      release_type:
+        type: choice
+        default: none
+        description: Version upgrade (none uses the version already committed)
+        options: 
+        - none
+        - code
+        - patch
+        - minor
+        - major
+      build:
+        description: "Should we build?"
+        required: true
+        type: boolean
+        default: true
+      github:
+        description: "Should we publish on Github?"
+        default: true
+        required: true
+        type: boolean
+      release_status:
+        type: choice
+        default: prerelease
+        description: "Release status on GitHub (if publishing)"
+        options:
+        - release
+        - prerelease
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+          submodules: recursive
+      
+      - uses: oleksiyrudenko/gha-git-credentials@v2-latest
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          actor: farfromrefug
+          name: Martin Guillon
+          email: dev@akylas.fr
+
+      - name: Git config
+        run: |
+          git config pull.rebase false
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3' # Not needed with a `.ruby-version` or `.tool-versions`
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 16111833  # Pinned SDK tools supporting API 37.0 packages
+          
+      - name: Install project Android SDK packages
+        run: |
+          sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+
+      - name: Load .env file
+        uses: xom9ikk/dotenv@v2.3.0
+        with:
+          mode: ci
+          load-mode: strict
+
+      - name: get current version
+        run: | 
+          echo "CURRENT_VERSION=$(bundle exec fastlane run android_get_version_name gradle_file:app/build.gradle | grep -oP '(?<=Result:)\s*\K(\d+\.?)+' )" > $GITHUB_ENV
+      - name: get current version
+        run: | 
+          echo "CURRENT_VERSION_CODE=$(bundle exec fastlane run android_get_version_code gradle_file:app/build.gradle | grep -oP '(?<=Result:)\s*\K(\d+\.?)+' )" > $GITHUB_ENV
+
+      - name: Extract version from tag
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+          echo "IS_TAG_TRIGGER=true" >> $GITHUB_ENV
+          
+
+
+      - id: release_type_string
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ env.IS_TAG_TRIGGER == 'true' && 'none' || github.event.inputs.release_type }}
+
+      - name: Bump release version
+        id: bump_version
+        if: github.event.inputs.release_type != 'code' && github.event.inputs.release_type != 'none' && env.IS_TAG_TRIGGER != 'true'
+        uses: boromir674/action-semver-bumper@v1.0.0
+        with:
+          sem_ver: ${{ env.CURRENT_VERSION }}
+          bump_operator: ${{ steps.release_type_string.outputs.uppercase }}
+
+      - name: update Version for manual trigger
+        if: (github.event.inputs.release_type != 'code' && github.event.inputs.release_type != 'none') && env.IS_TAG_TRIGGER != 'true'
+        run: |
+          echo "change version to ${{ github.event.inputs.release_type }}"
+          echo "NEW_VERSION=${{ steps.bump_version.outputs.new_sem_ver }}" >> $GITHUB_ENV
+          echo "NEW_VERSION_CODE=$((CURRENT_VERSION_CODE+1))"  >> $GITHUB_ENV
+          
+      - name: update Version for tag trigger
+        if: env.IS_TAG_TRIGGER == 'true'
+        run: |
+          echo "Using version from tag: ${{ env.TAG_VERSION }}"
+          echo "NEW_VERSION=${{ env.TAG_VERSION }}" >> $GITHUB_ENV
+          # For tag triggers, keep the current version code without incrementing
+          echo "NEW_VERSION_CODE=${{ env.CURRENT_VERSION_CODE }}" >> $GITHUB_ENV
+
+      - name: update Version Code only
+        if: github.event.inputs.release_type == 'code' && env.IS_TAG_TRIGGER != 'true'
+        run: |
+          echo "change version to ${{ github.event.inputs.release_type }}"
+          echo "NEW_VERSION=${{ env.CURRENT_VERSION }}"  >> $GITHUB_ENV
+          echo "NEW_VERSION_CODE=$((CURRENT_VERSION_CODE+1))"  >> $GITHUB_ENV
+
+      - name: update Version Str
+        run: |
+          if [ -n "$NEW_VERSION" ]; then
+            # Use semantic version only (vx.y.z format)
+            echo "VERSION_STR=${{env.NEW_VERSION}}"  >> $GITHUB_ENV
+          else
+            echo "VERSION_STR=${{env.CURRENT_VERSION}}"  >> $GITHUB_ENV
+          fi
+
+      - name: Bump version
+        uses: Swisyn/android-version-generator-actions@v1.5
+        if: github.event.inputs.release_type != 'none' && env.IS_TAG_TRIGGER != 'true'
+        with:
+          gradlePath: app/build.gradle # or app/build.gradle.kts 
+          versionCode: ${{env.NEW_VERSION_CODE}}
+          versionName: ${{env.NEW_VERSION}}
+
+      - name: Synchronize module version and identify Hook build
+        env:
+          TAG_VERSION: ${{ env.TAG_VERSION }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+          gradle = Path('app/build.gradle').read_text(encoding='utf-8')
+          version = re.search(r'versionName "([^"]+)"', gradle).group(1)
+          code = re.search(r'versionCode (\d+)', gradle).group(1)
+          if os.environ.get('TAG_VERSION') and os.environ['TAG_VERSION'] != version:
+              raise SystemExit('Tag version does not match app/build.gradle')
+          module = Path('app/src/main/resources/META-INF/xposed/module.prop')
+          module.write_text(re.sub(r'^version=.*$', f'version={version}', module.read_text(encoding='utf-8'), flags=re.M), encoding='utf-8')
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as env:
+              env.write(f"HOOK_BUILD_ID={version}:{code}-{os.environ['GITHUB_SHA'][:12]}\n")
+          PY
+
+      - name: Run shell prepare script
+        if: ${{ hashFiles('scripts/ci.prepare.sh') != '' }}
+        run: |
+          sh scripts/ci.prepare.sh --platform android --flavor github --version "${{ env.VERSION_STR }}"
+
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
+        run: |
+          mkdir -p "$(dirname "$KEYSTORE_PATH")"
+          echo $KEYSTORE_BASE64 | base64 -d > $KEYSTORE_PATH
+
+      # - name: publish beta
+      #   if: github.event.inputs.publish == 'true'
+      #   run: |
+      #     bundle exec fastlane android beta create_tag:${{ github.event.inputs.publish }} publish:${{ github.event.inputs.publish }} github:false
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: publish github
+        if: github.event.inputs.build == 'true' || env.IS_TAG_TRIGGER == 'true'
+        run: |
+          if [ "${{ env.IS_TAG_TRIGGER }}" == "true" ]; then
+            bundle exec fastlane android github create_tag:false publish:true github:true release_status:release tag_name:${{ github.ref_name }} skip_commit:true skip_push:true --verbose
+          else
+            bundle exec fastlane android github create_tag:${{ github.event.inputs.github }} publish:${{ github.event.inputs.github }} github:true release_status:${{ github.event.inputs.release_status }} skip_commit:${{ inputs.release_type == 'none' }} skip_push:${{ inputs.release_type == 'none' }} --verbose
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            
+      - uses: actions/upload-artifact@v4
+        if: inputs.build || env.IS_TAG_TRIGGER == 'true'
+        with:
+          name:  ${{ env.APP_ID }}.${{ env.VERSION_STR }}
+          path: |
+            dist/*.apk
+            app/build/outputs/mapping/release/mapping.txt
+          retention-days: 7
+          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`

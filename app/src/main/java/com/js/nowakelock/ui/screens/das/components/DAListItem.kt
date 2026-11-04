@@ -1,0 +1,635 @@
+package com.js.nowakelock.ui.screens.das.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import com.js.nowakelock.R
+import com.js.nowakelock.data.db.Type
+import com.js.nowakelock.data.model.DAItem
+import com.js.nowakelock.ui.theme.AllowedGreen
+
+/**
+ * WakelockListItem displays a single wakelock with its settings
+ * Redesigned with Card layout for better presentation
+ * Optimized for information density following MD3 guidelines
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DAListItem(
+    daItem: DAItem,
+    onToggleFullBlock: (Boolean) -> Unit,
+    onToggleScreenOffBlock: (Boolean) -> Unit,
+    onTimeWindowChange: (Int) -> Unit,
+    onItemClick: (DAItem) -> Unit = {}
+) {
+    // Remember status color based on item state
+    val statusColor = remember(daItem.fullBlocked, daItem.screenOffBlock, daItem.timeWindowSec) {
+        getStatusColor(daItem)
+    }
+
+    // For time window input
+    var timeWindowText by remember(daItem.timeWindowSec) {
+        mutableStateOf(daItem.timeWindowSec.toString())
+    }
+
+    // Card with status bar indicator
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 5.dp),
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp,
+        onClick = { onItemClick(daItem) }
+    ) {
+        // measure content, then apply correct height to status bar
+        SubcomposeLayout { constraints ->
+            // measure content
+            val contentPlaceable = subcompose("content") {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 4.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
+                ) {
+                    // Info section - static part that rarely changes
+                    key(
+                        daItem.name,
+                        daItem.packageName,
+                        daItem.count,
+                        daItem.countTime,
+                        daItem.type
+                    ) {
+                        InfoSection(daItem)
+                    }
+
+                    // Subtle divider
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(horizontal = 0.dp)
+                            .fillMaxWidth(),
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    )
+
+                    // Control section - dynamic part that changes on interaction
+                    key(daItem.fullBlocked, daItem.screenOffBlock, daItem.timeWindowSec) {
+                        ControlSection(
+                            daItem = daItem,
+                            timeWindowText = timeWindowText,
+                            onTimeWindowTextChange = { newValue ->
+                                // only accept digits and empty input
+                                if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                                    // null or empty input should not trigger onTimeWindowChange
+                                    if (newValue.isEmpty()) {
+                                        timeWindowText = "0"
+                                        onTimeWindowChange(0)
+                                    } else {
+                                        timeWindowText = newValue
+                                        newValue.toIntOrNull()?.let { intValue ->
+                                            onTimeWindowChange(intValue)
+                                        }
+                                    }
+                                }
+                            },
+                            onToggleFullBlock = onToggleFullBlock,
+                            onToggleScreenOffBlock = onToggleScreenOffBlock
+                        )
+                    }
+                }
+            }.first().measure(constraints)
+
+            // measure content height
+            val contentHeight = contentPlaceable.height
+            val indicatorPlaceable = subcompose("indicator") {
+                Box(
+                    modifier = Modifier
+                        .width(4.dp)
+                        .height(contentHeight.toDp())
+                        .background(
+                            color = statusColor,
+                            shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp)
+                        )
+                )
+            }.first()
+                .measure(constraints.copy(minWidth = 4.dp.roundToPx(), maxWidth = 4.dp.roundToPx()))
+
+            // layout content
+            layout(constraints.maxWidth, contentHeight) {
+                // place content (set padding to leave space for status bar)
+                contentPlaceable.place(4.dp.roundToPx(), 0)
+                // place status bar
+                indicatorPlaceable.place(0, 0)
+            }
+        }
+    }
+}
+
+/**
+ * get status color
+ * follow Material Design 3 color system semantic colors
+ * there are 5 states:
+ * 1. no restrictions
+ * 2. full block
+ * 3. screen off block only
+ * 4. time window block only
+ * 5. screen off + time window block
+ */
+private fun getStatusColor(daItem: DAItem): Color {
+    return when {
+        // 1. full block
+        daItem.fullBlocked ->
+            Color(0xFFB3261E).copy(alpha = 0.85f) // MaterialTheme.colorScheme.error
+
+        // 2. screen off block + time window block
+        daItem.screenOffBlock && daItem.timeWindowSec != 0 ->
+            Color(0xFFE65100).copy(alpha = 0.85f) // Deep Orange
+
+        // 3. screen off block only
+        daItem.screenOffBlock ->
+            Color(0xFFFF9800).copy(alpha = 0.85f) // Orange
+
+        // 4. time window block only
+        daItem.timeWindowSec != 0 ->
+            Color(0xFFFFC107).copy(alpha = 0.85f) // Amber
+
+        // 5. no restrictions
+        else ->
+            AllowedGreen.copy(alpha = 0.85f)
+    }
+}
+
+/**
+ * Info section containing icon, name, package name and stats
+ * Optimized for density and vertical space
+ */
+@Composable
+private fun InfoSection(daItem: DAItem) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        val (icon, name, packageName, userId, count, countTime) = createRefs()
+
+        // Icon
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .constrainAs(icon) {
+                    start.linkTo(parent.start, 8.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }, contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = when (daItem.type) {
+                    Type.Wakelock -> Icons.Outlined.Lock
+                    Type.Alarm -> Icons.Outlined.AccessTime
+                    Type.Service -> Icons.Outlined.Build
+                    else -> Icons.Outlined.Lock
+                },
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+
+        // Name - put stats on same row for longer names
+        Text(
+            text = daItem.name,
+            style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.constrainAs(name) {
+                width = Dimension.fillToConstraints
+                start.linkTo(icon.end, 12.dp)
+                end.linkTo(parent.end)
+                top.linkTo(parent.top)
+            })
+
+
+        // Package name with highly optimized user badge
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.constrainAs(packageName) {
+                start.linkTo(icon.end, 12.dp)
+                top.linkTo(name.bottom, 4.dp)
+            }
+        ) {
+            Text(
+                text = daItem.packageName,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false)  // 允许伸缩但不填充
+            )
+
+            // User badge - only if userId is not 0
+            if (daItem.userId != 0) {
+                Spacer(Modifier.width(4.dp))
+
+                // COLOR
+                val badgeColor = when (daItem.userId) {
+                    10 -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f)  // 工作配置文件
+                    in 1..9 -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)  // 常规用户
+                    else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)  // 其他用户
+                }
+
+                val textColor = when (daItem.userId) {
+                    10 -> MaterialTheme.colorScheme.onTertiaryContainer
+                    in 1..9 -> MaterialTheme.colorScheme.onSecondaryContainer
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                }
+
+                val displayUserId = when {
+                    daItem.userId > 99 -> "99+"
+                    else -> "${daItem.userId}"
+                }
+
+                // 字体大小逻辑
+                val fontSize = when {
+                    daItem.userId > 9 -> 8.sp
+                    else -> 10.sp
+                }
+
+                Surface(
+                    color = badgeColor,
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier.size(16.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = displayUserId,
+                            fontSize = fontSize,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = textColor,
+                        )
+                    }
+                }
+            }
+        }
+
+        // Count chip - more compact
+        Surface(
+            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier
+                .height(22.dp)
+                .constrainAs(count) {
+                    start.linkTo(icon.end, 12.dp)
+                    top.linkTo(packageName.bottom, 8.dp)
+                }) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 6.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Bolt,
+                    contentDescription = null,
+                    modifier = Modifier.size(12.dp),
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Spacer(Modifier.width(2.dp))
+                Text(
+                    text = "${daItem.count}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
+        }
+
+        // 仅在 Wakelock 类型时显示唤醒时间
+        if (daItem.type == Type.Wakelock) {
+            Surface(
+                color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier
+                    .height(22.dp)
+                    .constrainAs(countTime) {
+                        start.linkTo(count.end, 8.dp)
+                        top.linkTo(packageName.bottom, 8.dp)
+                    }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 6.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.AccessTime,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                    Spacer(Modifier.width(2.dp))
+                    Text(
+                        text = formatTime(daItem.countTime),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Control section containing switches and time window input
+ * Optimized for compact layout
+ */
+@Composable
+private fun ControlSection(
+    daItem: DAItem,
+    timeWindowText: String,
+    onTimeWindowTextChange: (String) -> Unit,
+    onToggleFullBlock: (Boolean) -> Unit,
+    onToggleScreenOffBlock: (Boolean) -> Unit
+) {
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .padding(start = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Block section
+        // Full block label and switch
+        Row(
+            modifier = Modifier.testTag("da_control_allow"),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.allow),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Switch(
+                checked = !daItem.fullBlocked,
+                onCheckedChange = onToggleFullBlock,
+                modifier = Modifier.scale(0.75f),
+                thumbContent = if (daItem.fullBlocked) {
+                    {
+                        Icon(
+                            imageVector = Icons.Outlined.Bolt,
+                            contentDescription = null,
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+                } else null
+            )
+        }
+
+        // Screen off label and switch
+        Row(
+            modifier = Modifier.testTag("da_control_screen_off"),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.screen_off),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Switch(
+                checked = !daItem.screenOffBlock,
+                onCheckedChange = onToggleScreenOffBlock,
+                enabled = !daItem.fullBlocked,
+                modifier = Modifier.scale(0.75f),
+            )
+        }
+
+        // Timeout section
+        Row(
+            modifier = Modifier.testTag("da_control_timeout"),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.timeout),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+
+            // BasicTextField
+            BasicTextField(
+                value = timeWindowText,
+                onValueChange = onTimeWindowTextChange,
+                modifier = Modifier
+                    .testTag("da_control_timeout_field")
+                    .width(65.dp)
+                    .height(36.dp)
+                    .border(
+                        width = 1.dp,
+                        color = if (!daItem.fullBlocked) MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    textAlign = TextAlign.End,
+                    color = if (!daItem.fullBlocked)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                enabled = !daItem.fullBlocked,
+                singleLine = true,
+                decorationBox = { innerTextField ->
+                    if (timeWindowText.isEmpty()) {
+                        Text(
+                            text = "0",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                            textAlign = TextAlign.End
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            text = "s",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (!daItem.fullBlocked)
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                        )
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(modifier = Modifier.weight(1f)) {
+                                innerTextField()
+                            }
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(
+                                text = "s",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = if (!daItem.fullBlocked)
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                else
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                            )
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
+/**
+ * Helper function to format time in milliseconds to a human-readable string
+ */
+@Composable
+private fun formatTime(timeInMillis: Long): String {
+    val seconds = timeInMillis / 1000
+    return when {
+        seconds < 60 -> "${seconds}s"
+        seconds < 3600 -> "${seconds / 60}m"
+        else -> "${seconds / 3600}h ${(seconds % 3600) / 60}m"
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun PreviewDAListItem() {
+    // Sample for preview
+    val dAItem = DAItem(
+        name = "KEEP_SCREEN_ON_FLAG",
+        packageName = "com.facebook.katana",
+        count = 47,
+        blockCount = 12,
+        countTime = 8100000, // 2h 15m in milliseconds
+        fullBlocked = true,
+        timeWindowSec = 0,
+        screenOffBlock = false,
+        type = Type.Wakelock
+    )
+
+    DAListItem(
+        daItem = dAItem,
+        onToggleFullBlock = {},
+        onToggleScreenOffBlock = {},
+        onTimeWindowChange = {})
+}
+
+@Composable
+@Preview(showBackground = true)
+fun Preview2() {
+    // Sample for preview
+    val dAItem = DAItem(
+        name = "KEEP_SCREEN_ON_FLAG",
+        packageName = "com.facebook.katana",
+        count = 47,
+        blockCount = 12,
+        countTime = 8100000, // 2h 15m in milliseconds
+        fullBlocked = false,
+        timeWindowSec = 1,
+        screenOffBlock = true,
+        type = Type.Wakelock,
+        userId = 50
+    )
+
+    DAListItem(
+        daItem = dAItem,
+        onToggleFullBlock = {},
+        onToggleScreenOffBlock = {},
+        onTimeWindowChange = {})
+}
+
+@Composable
+@Preview(showBackground = true, widthDp = 320, name = "DAListItem (Narrow 320)")
+fun PreviewDAListItemNarrow320() {
+    val dAItem = DAItem(
+        name = "KEEP_SCREEN_ON_FLAG",
+        packageName = "com.facebook.katana",
+        count = 47,
+        blockCount = 12,
+        countTime = 8100000,
+        fullBlocked = false,
+        timeWindowSec = 60,
+        screenOffBlock = true,
+        type = Type.Wakelock
+    )
+
+    DAListItem(
+        daItem = dAItem,
+        onToggleFullBlock = {},
+        onToggleScreenOffBlock = {},
+        onTimeWindowChange = {}
+    )
+}
+
+@Composable
+@Preview(showBackground = true, widthDp = 320, fontScale = 1.3f, name = "DAListItem (Narrow 320, Font 1.3)")
+fun PreviewDAListItemNarrow320FontScale() {
+    val dAItem = DAItem(
+        name = "KEEP_SCREEN_ON_FLAG",
+        packageName = "com.facebook.katana",
+        count = 47,
+        blockCount = 12,
+        countTime = 8100000,
+        fullBlocked = false,
+        timeWindowSec = 60,
+        screenOffBlock = true,
+        type = Type.Wakelock
+    )
+
+    DAListItem(
+        daItem = dAItem,
+        onToggleFullBlock = {},
+        onToggleScreenOffBlock = {},
+        onTimeWindowChange = {}
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun PreviewDAListItemWithTimeWindow() {
+    // Sample wakelock for preview with time window
+    val dAItem = DAItem(
+        name = "GCM_RECONNECT_WAKELOCK",
+        packageName = "com.google.android.gms",
+        count = 36,
+        blockCount = 0,
+        countTime = 5400000, // 1h 30m in milliseconds
+        fullBlocked = false,
+        timeWindowSec = 60,
+        screenOffBlock = false,
+        type = Type.Wakelock
+    )
+
+    DAListItem(
+        daItem = dAItem,
+        onToggleFullBlock = {},
+        onToggleScreenOffBlock = {},
+        onTimeWindowChange = {})
+}

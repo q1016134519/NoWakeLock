@@ -1,0 +1,269 @@
+﻿# Journal des modifications
+
+Ce document enregistre l'historique des mises à jour de version et les changements importants de NoWakeLock.
+
+## [v3.0.11 Build 89] - Préparation de la préversion (2026-09-12)
+
+Cette version est destinée au canal GitHub **Pre-release**, avant une diffusion stable.
+
+### Nouveautés et corrections
+
+- Conservation de Xposed historique et ajout d'un chemin distinct pour l'API officielle 102 : wakelocks, alarmes et services. Les API intermédiaires ne font pas partie de la cible.
+- Publication atomique des règles avec confirmation, sans redémarrage ni application résidente ; statistiques par lots dans une file bornée avec diagnostic des pertes et erreurs.
+- Rechargement du module via l'API 102, manuel ou après mise à jour de l'APK, avec transfert des règles, statistiques et verrous actifs et vérification du code exécuté.
+- Correction des groupes regex vides, de l'effacement des statistiques après erreur de lecture/cache, des doubles comptes Service, des durées gonflées après un premier blocage et du retour bindService sur l'ancien framework.
+
+### Mise à niveau et validation
+
+- Sauvegarder les règles. Une signature identique permet la mise à jour sur place ; passer d'une signature locale de débogage à celle de CI peut nécessiter une réinstallation après sauvegarde.
+- La première migration depuis un module sans callbacks de rechargement peut encore demander un redémarrage. Les mises à jour suivantes dépendent du framework ; l'ancien chemin conserve son besoin de redémarrage.
+- Le candidat précédent 3.0.10 / 88 a passé les tests OP13 / Vector 2.2 : rechargement manuel/automatique, continuité des verrous, autorisation/blocage/rétablissement pour les utilisateurs 0/10, et 120 tests unitaires.
+- Restent à vérifier l'implémentation finale sur un ancien framework, un Provider séparé, le démarrage avant déverrouillage et certains cas concurrents. Ces résultats ne valident pas l'installation du nouvel APK CI.
+- [Notes complètes et limites en anglais/chinois](https://github.com/NoWakeLock/NoWakeLock/blob/dev/fastlane/release-notes/3.0.11.md)
+
+---
+
+## [v3.0.10 Build 87] - 2026-05-17
+
+- Correction des flux de tri/filtrage des listes d'applications et d'événements, avec tests unitaires et sur appareil.
+- Les candidats locaux suivants ont conservé 3.0.10 jusqu'au Build 88 ; leurs changements sont décrits dans la préversion 3.0.11 ci-dessus.
+
+---
+
+
+## [v3.0.9 Build 86] - 2026-03-15
+
+### 🐛 Corrections
+- Corrige les collisions inter-apps de l''état d''intervalle minimum pour des entrées WakeLock/Alarm de même nom
+- Corrige la règle « bloquer uniquement écran éteint » qui ne s''appliquait pas dans le domaine Service
+- Corrige le champ de délai tronqué dans la zone de contrôle DA sur largeur étroite
+
+### 🧪 Tests et qualité
+- Ajoute des tests unitaires pour `calculateTime`, le JSON de sauvegarde, le mapping des préférences et le compteur/registre des wakelocks
+- Ajoute des tests d''instrumentation pour MainActivity, `XProvider` et les layouts étroits
+- Ajoute un script d''automatisation sur appareil réel et la documentation de validation
+
+---
+## [v3.0.8 Build 85] - Non publié
+
+### 🐛 Corrections
+- Correction d'un crash de la liste des apps en multi-utilisateur sur Android 16
+- Amélioration de la compatibilité Samsung/OneUI (fallback OEM + support Nest accessor pour les hooks)
+- Suppression de `com.android.settings.provider` des scopes recommandés LSPosed
+- Raccourcissement du `short_description` des métadonnées fastlane (évite les avertissements/troncature)
+
+---
+
+## [v3.0.7 Build 84] - 2025-07-26
+
+### 🔧 Améliorations
+- Dépendance Xposed via JitPack et suppression des dépendances obsolètes
+
+---
+
+## [v3.0.6 Build 83] - 2025-07-26
+
+### 🔧 Améliorations
+- Amélioration du workflow de release GitHub Actions (gestion tags/versions)
+
+---
+
+## [v3.0.5 Build 82] - 2025-07-25
+
+### ✨ Nouvelles fonctionnalités
+- Support des builds reproductibles pour F-Droid
+- Nom d'APK compatible F-Droid (`NoWakeLock-%v.apk`)
+- Docs : compatibilité Android jusqu'à 16
+
+---
+
+## [v3.0.4 Build 81] - 2025-07-21
+
+### 🌐 Nouveau support linguistique
+- **Allemand (Deutsch)** - Support complet de l'interface allemande
+- **Chinois traditionnel** - Support du chinois traditionnel (région de Taïwan)
+- Interface de sélection de langue incluant de nouvelles options linguistiques
+- Ressources de chaînes localisées améliorées
+
+### 🔧 Améliorations
+- Expérience de changement de langue optimisée
+- Configuration des ressources multilingues améliorée
+- Cohérence des chaînes localisées améliorée
+
+---
+
+## [v3.0.3 Build 80] - 2025-05-20
+
+### 🎉 Mise à jour majeure
+- **Première version officielle de la série 3.x**, refactorisation complète
+- **Material Design 3** conception d'interface entièrement nouvelle
+- Support de compatibilité **Android 7-16**
+- **Support multi-utilisateur** implémentation complète
+- **Système de suivi d'événements** mise à niveau complète
+
+### ✨ Nouvelles fonctionnalités
+- Intégration du framework UI **Jetpack Compose**
+- Fonctionnalité **Statistiques d'application** améliorée
+- Fonctionnalité **Recherche globale**
+- **Détection de module** vérification d'état complète
+- **Gestion utilisateur** support d'environnement multi-utilisateur
+
+### ⚠️ Note de compatibilité
+- **Problèmes connus avec les appareils Samsung** - Certaines fonctionnalités peuvent être limitées
+- **Recommandation de mise à niveau** :
+  1. Désinstaller la version v2.0.x
+  2. Redémarrer l'appareil
+  3. Installer la version v3.x
+  4. Redémarrer l'appareil
+
+### 🔄 Migration de configuration
+- **Configuration v2.0 incompatible** - Reconfiguration nécessaire
+- Il est recommandé de sauvegarder les configurations importantes avant la mise à niveau
+- Fonctionnalité d'import/export de configuration fournie
+
+---
+
+## [v3.0.2 Build 77] - 2025-05-16
+
+### ✨ Nouvelles fonctionnalités
+- **Fonction de vérification de module** - Validation complète de l'état du module
+- **Optimisation de l'interface de détection** - Affichage d'état plus clair
+- **Stratégie de migration de base de données** - Traitement amélioré de mise à niveau de version
+
+### 🐛 Corrections
+- Correction des problèmes de détection de module sur certains appareils
+- Amélioration du processus de mise à niveau de base de données
+- Optimisation de la vitesse de réponse de l'interface utilisateur
+
+---
+
+## [v3.0.1 Build 75-76] - 2025-05-05
+
+### 🔧 Améliorations
+- **Stratégie Hook unifiée** - Optimisation du traitement Service, Alarm, WakeLock
+- **Optimisation des performances** - Réduction de l'occupation des ressources système
+- **Refactorisation du code** - Amélioration de la qualité et maintenabilité du code
+
+### 🐛 Corrections
+- Correction des problèmes de compatibilité sur certaines versions Android
+- Amélioration de la stabilité Hook
+- Optimisation de l'utilisation mémoire
+
+---
+
+## [v2.0.5 Build 62-63] - 2025-03
+
+### ✨ Nouvelles fonctionnalités
+- **Icône de démarrage thématisée** - Support de thème dynamique
+- **Amélioration de gestion d'erreurs** - Traitement d'anomalies de données ContentProvider
+- **Mise à jour Hook Service** - Support Android API 29-40
+
+### 🔧 Améliorations
+- Optimisation des performances de requête de données
+- Amélioration de la réponse de l'interface utilisateur
+- Amélioration de l'enregistrement des journaux d'erreur
+
+---
+
+## Série v2.x (versions historiques)
+
+### Caractéristiques principales
+- Gestion de base WakeLock/Alarm/Service
+- Conception UI traditionnelle
+- Support de base Android 7+
+- Environnement mono-utilisateur
+
+### Limitations connues
+- Conception UI relativement simple
+- Fonctionnalités relativement basiques
+- Pas de support d'environnement multi-utilisateur
+- Configuration incompatible avec v3.x
+
+---
+
+## Comparaison des versions
+
+### Principales différences v3.x vs v2.x
+
+| Caractéristique | v2.x | v3.x |
+|-----------------|------|------|
+| Framework UI | Vue traditionnelle | Jetpack Compose |
+| Langage de conception | Material Design 2 | Material Design 3 |
+| Support Android | 7-11 | 7-16 |
+| Multi-utilisateur | ❌ | ✅ |
+| Détection de module | Basique | Complète |
+| Performance | Générale | Optimisée |
+| Compatibilité config | - | Incompatible v2.x |
+
+### Recommandations de mise à niveau
+
+#### Mise à niveau depuis v2.x
+1. **Sauvegarder la configuration** - Enregistrer les paramètres de règles actuels
+2. **Désinstallation complète** - Désinstaller v2.x et redémarrer
+3. **Installation nouvelle** - Installer v3.x et reconfigurer
+4. **Configuration progressive** - Restaurer progressivement les paramètres selon la sauvegarde
+
+#### Nouveaux utilisateurs
+- Installer directement la dernière version v3.x
+- Configurer selon le guide [Démarrage rapide](../getting-started/quick-start.md)
+
+---
+
+## Problèmes connus
+
+### Problèmes connus v3.0.3
+- **Appareils Samsung** - Certaines fonctionnalités peuvent être instables
+- **Android 15** - Certaines nouvelles fonctionnalités peuvent ne pas être entièrement supportées
+- **Utilisation mémoire** - Peut avoir un impact sur les performances sur les appareils à faible mémoire
+
+### Solutions temporaires
+- Les appareils Samsung sont recommandés d'utiliser une configuration conservatrice
+- Les utilisateurs d'Android 15 sont priés de suivre les mises à jour ultérieures
+- Les appareils à faible mémoire sont recommandés de réduire le nombre de règles
+
+---
+
+## Feuille de route de développement
+
+### Plan à court terme (v3.1.x)
+- Amélioration de la compatibilité des appareils Samsung
+- Support complet d'Android 15
+- Optimisation des performances
+- Plus de modèles de configuration prédéfinis
+
+### Plan à moyen terme (v3.2.x)
+- Synchronisation de configuration cloud (optionnelle)
+- Analyse statistique plus riche
+- Système de plugins
+- Ouverture d'API
+
+### Plan à long terme (v4.x)
+- Conception d'architecture entièrement nouvelle
+- Support d'appareils plus large
+- Configuration assistée par IA
+- Fonctionnalités d'entreprise
+
+---
+
+## Obtenir les mises à jour
+
+### Canaux officiels
+- [GitHub Releases](https://github.com/NoWakeLock/NoWakeLock/releases) - Dernière version
+- [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.js.nowakelock) - Dépôt F-Droid
+
+### Types de versions
+- **Stable** - Version stable, recommandée pour les utilisateurs généraux
+- **Beta** - Version test, aperçu anticipé des nouvelles fonctionnalités
+- **Dev** - Version développement, uniquement pour tests de développement
+
+### Notifications de mise à jour
+- L'application vous alertera des nouvelles versions
+- Suivez GitHub Releases pour les dernières informations
+- Rejoignez les groupes communautaires pour des nouvelles de première main
+
+!!! info "Stratégie de version"
+    NoWakeLock suit le contrôle de version sémantique, les mises à jour majeures seront annoncées à l'avance, garantissant aux utilisateurs suffisamment de temps de préparation pour la mise à niveau.
+
+!!! warning "Rappel de mise à niveau"
+    Sauvegardez impérativement la configuration avant les mises à niveau de versions majeures, certaines versions peuvent présenter des incompatibilités.
+

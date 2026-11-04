@@ -1,0 +1,1 @@
+Targeted Android power management. Control Wakelocks, Alarms & Services. Requires Xposed.

@@ -1,0 +1,272 @@
+<resources>
+    <string name="app_name">NoWakeLock</string>
+    <string name="xposeddescription">记录和禁用唤醒锁</string>
+    <string name="navigation_view_header_title">NoWakeLock</string>
+    <string name="test">测试</string>
+    <string name="active">模块未在 xposed 框架激活</string>
+    <string name="backup">备份完成</string>
+    <string name="restore">恢复完成</string>
+    <string name="BackupAndRestore">备份与恢复</string>
+    <string name="clipboard">复制到剪贴板</string>
+    <string name="android">Android 系统</string>
+    <string name="settings">设置</string>
+    <string name="sync">同步</string>
+    <string name="recordFlag_title">记录数据</string>
+    <string name="recordFlag_summary">记录设备唤醒数据</string>
+    <string name="updateDb_title">数据同步间隔</string>
+    <string name="updateDb_summary">唤醒数据同步间隔(秒)</string>
+    <string name="updateST_title">同步配置</string>
+    <string name="updateST_summary">同步禁用等配置信息(秒)</string>
+    <string name="other">其他</string>
+    <string name="powerFlag_title">重置计数</string>
+    <string name="powerFlag_summary">电源状态改变后,重置计数</string>
+    <string name="theme">主题</string>
+    <string name="theme_list">全局主题</string>
+    <string name="light_theme_name">浅色</string>
+    <string name="dark_theme_name">暗色</string>
+    <string name="black_theme_name">黑色（AMOLED）</string>
+    <string name="system_theme_name">跟随系统</string>
+    <string name="channel_name">后台服务</string>
+    <string name="channel_description">请忽略通知,或者将其隐藏</string>
+    <string name="channel_id">nowakelock</string>
+    <string name="notification_title">后台服务</string>
+    <string name="notification_text">NoWakeLock 需要使用后台服务来维护数据库,请忽略或隐藏这条通知.</string>
+    <string name="Count">计数</string>
+    <string name="BlockCount">阻止</string>
+    <string name="CountTime">唤醒时间</string>
+    <string name="BlockCountTime">阻止时间</string>
+    <string name="search_title">搜索</string>
+    <string name="menu_filter">显示</string>
+    <string name="menu_filter_user_app">用户应用</string>
+    <string name="menu_filter_system_app">系统应用</string>
+    <string name="menu_filter_modified">已修改应用</string>
+    <string name="menu_filter_all_app">所有应用</string>
+    <string name="menu_filter_count">累计次数排序</string>
+    <string name="menu_filter_name">名称排序</string>
+    <string name="menu_filter_countime">累计时间排序</string>
+    <string name="WakeLock">唤醒锁</string>
+    <string name="Alarm">定时器</string>
+    <string name="Service">服务</string>
+    <string name="Apps">应用</string>
+    <string name="help">帮助</string>
+    <string name="help_instructions">        点击应用程序图标或名称进入具体设置.
+        <![CDATA[<br><br>]]>严重警告,不要轻易限制系统应用,会引起无法预计的后果.
+        <![CDATA[<br><br>]]>其他信息参见 <![CDATA[<a href="https://github.com/Jasper-1024/NoWakeLock/blob/dev/README/README_zh_cn.md"> 应用介绍 </a>]]>;
+           <![CDATA[<a href="https://github.com/Jasper-1024/NoWakeLock/blob/dev/README/FAQ_zh_cn.md">常见问答</a>]]>;
+    </string>
+    <string name="help_contact">联系:\n
+            如果您在使用过程中有任何疑问或遇到 BUG,您可以邮件我,或者发起新的 Issue.\n
+        \n
+        Issue : https://github.com/Jasper-1024/NoWakeLock/issues \n
+        \n
+        JasperHale: ljy087621@gmail.com</string>
+    <string name="ATIText">允许唤醒间隔</string>
+    <string name="FlagText">允许</string>
+    <string name="wakelockFlagText">允许唤醒锁</string>
+    <string name="ATIUnit">秒</string>
+    <string name="Re_Alarm">阻止定时器(正则)</string>
+    <string name="Re_Wakelock">阻止唤醒锁(正则)</string>
+    <string name="Save">保存</string>
+    <string name="name">名称</string>
+    <string name="application">应用</string>
+    <string name="statistics">统计</string>
+    <string name="backup_title">创建新的备份文件</string>
+    <string name="backup_summary">备份目前所有应用设置到文件</string>
+    <string name="restore_title">从备份文件恢复</string>
+    <string name="restore_summary">从备份文件恢复会覆盖当前设置</string>
+    <string name="action_allow_all">全部允许</string>
+    <string name="action_block_all">全部阻止</string>
+    <string name="action_select_all">全选</string>
+    <string name="action_select_inverse">"反选"</string>
+    <string name="action_set_ATI">"设置允许时间间隔"</string>
+    <string name="database">数据库</string>
+    <string name="clear_summary">清空计数时,一同清理不活跃记录.</string>
+    <string name="clear_title">清理不活跃记录</string>
+    <string name="re_hint">一行一个规则,新规则回车另起新行.</string>
+    <string name="user_owner">主用户</string>
+    <string name="user_work">工作资料</string>
+    <string name="user_name">用户</string>
+    <string name="user">用户</string>
+    <string name="experimental">实验功能</string>
+    <string name="Debug">调试模式</string>
+    <string name="Debug_summary">遇到唤醒锁/定时器/服务无记录时启用此项,在 Xposed 中导出完整日志,您可以在任何渠道发送给我以排查问题.</string>
+    <string name="da_detail_title">唤醒锁详情</string>
+    <string name="navigate_back">返回</string>
+    <string name="more_options">更多选项</string>
+    <string name="stat_total_count">次数</string>
+    <string name="stat_blocked_count">已阻止</string>
+    <string name="stat_total_time">总时间</string>
+    <string name="stat_saved_time">节省时间</string>
+    <string name="about_this_item">关于此唤醒锁</string>
+    <string name="no_info_wakelock">没有此唤醒锁的更多信息</string>
+    <string name="no_info_alarm">没有此定时器的更多信息</string>
+    <string name="no_info_service">没有此服务的更多信息</string>
+    <string name="no_info_unknown">没有相关信息</string>
+    <string name="recommendations">推荐设置</string>
+    <string name="settings_title">唤醒锁设置</string>
+    <string name="allow_this_item">阻止唤醒锁</string>
+    <string name="allow_this_item_desc">阻止此唤醒锁的触发</string>
+    <string name="block_during_sleep">仅在休眠时阻止</string>
+    <string name="block_during_screen_off">仅在屏幕关闭时阻止</string>
+    <string name="allowed_time_interval">允许的时间间隔</string>
+    <string name="allowed_time_interval_desc">允许唤醒锁触发的时间间隔</string>
+    <string name="seconds">秒</string>
+    <string name="activity_timeline">活动时间线</string>
+    <string name="past_24_hours">过去 24 小时</string>
+    <string name="total">总计</string>
+    <string name="blocked">已阻止</string>
+    <string name="recent_activities">最近活动</string>
+    <string name="no_recent_wakelock_activities">最近没有唤醒锁活动</string>
+    <string name="no_recent_alarm_activities">最近没有定时器活动</string>
+    <string name="no_recent_service_activities">最近没有服务活动</string>
+    <string name="no_recent_activities">最近没有活动</string>
+    <string name="status_allowed">已允许</string>
+    <string name="status_blocked">已阻止</string>
+    <string name="duration_separator"> • 持续时间: %s</string>
+    <string name="error_loading_data">加载数据时出错，请重试</string>
+    <string name="now">现在</string>
+    
+    <!-- 设置页面 -->
+    <string name="settings_interface">界面</string>
+    <string name="language">语言</string>
+    <string name="cancel">取消</string>
+    <string name="settings_data_management">数据管理</string>
+    <string name="settings_backup">备份与恢复</string>
+    <string name="settings_experimental">实验功能</string>
+    
+    <!-- 语言设置 -->
+    <string name="english_language_name">English</string>
+    <string name="chinese_language_name">中文</string>
+    <string name="traditional_chinese_language_name">繁體中文</string>
+    <string name="french_language_name">Français</string>
+    <string name="german_language_name">Deutsch</string>
+    <string name="system_language_name">跟随系统</string>
+
+    <string name="app_detail_title">应用详情</string>
+    <string name="back">返回</string>
+    <string name="app_statistics">应用统计</string>
+    <string name="wakelock_statistics">唤醒锁统计</string>
+    <string name="alarm_statistics">定时器统计</string>
+    <string name="service_statistics">服务统计</string>
+    <string name="total_wakelocks">唤醒锁总数</string>
+    <string name="blocked_wakelocks">已阻止唤醒锁</string>
+    <string name="total_alarms">定时器总数</string>
+    <string name="blocked_alarms">已阻止定时器</string>
+    <string name="total_services">服务总数</string>
+    <string name="blocked_services">已阻止服务</string>
+    <string name="total_time">总时间</string>
+    <string name="saved_time">节省时间</string>
+    <string name="allowed">允许</string>
+    <string name="unknown_error">未知错误</string>
+
+    <!-- 数据管理设置 -->
+    <string name="power_connection_detection">电源连接检测</string>
+    <string name="power_connection_detection_desc">电源连接时重置计数</string>
+    <string name="clear_inactive_data">清除不活跃数据</string>
+    <string name="clear_inactive_data_desc">清除不活跃数据时,一同清理不活跃记录</string>
+
+    <!-- 备份与恢复设置 -->
+    <string name="create_backup">创建备份文件</string>
+    <string name="create_backup_desc">保存当前所有应用设置到文件</string>
+    <string name="restore_backup">从备份文件恢复</string>
+    <string name="restore_backup_desc">从备份文件恢复会覆盖当前设置</string>
+    <string name="backup_success">备份成功</string>
+    <string name="backup_failed">备份失败</string>
+    <string name="restore_success">恢复成功</string>
+    <string name="restore_failed">恢复失败</string>
+
+    <!-- 数据管理消息 -->
+    <string name="data_cleared">所有数据已清理</string>
+    <string name="clear_data_failed">清理数据失败: %1$s</string>
+    <string name="backup_created">备份创建成功</string>
+    <string name="backup_creation_failed">备份创建失败: %1$s</string>
+    <string name="clear_all_data">清除所有数据</string>
+    <string name="clear">清除</string>
+
+    <!-- 实验功能设置 -->
+    <string name="debug_mode">调试模式</string>
+    <string name="debug_mode_desc">启用详细日志,用于排查问题</string>
+    <string name="error_loading_app_detail">加载应用详情时出错</string>
+
+    <!-- App Settings Strings -->
+    <string name="app_settings">应用设置</string>
+    <string name="block_settings">全局阻止设置</string>
+    <string name="wakelock_patterns">唤醒锁正则匹配</string>
+    <string name="alarm_patterns">定时器正则匹配</string>
+    <string name="service_patterns">服务正则匹配</string>
+    <string name="allow_wakelocks">允许唤醒锁</string>
+    <string name="allow_wakelocks_description">允许应用申请唤醒锁</string>
+    <string name="allow_alarms">允许定时器</string>
+    <string name="allow_alarms_description">允许应用申请定时器</string>
+    <string name="allow_services">允许服务</string>
+    <string name="allow_services_description">允许应用启动服务</string>
+    <string name="add_pattern">添加匹配模式</string>
+    <string name="pattern">正则表达式</string>
+    <string name="invalid_regex">无效的正则表达式</string>
+    <string name="add">添加</string>
+    <string name="remove">移除</string>
+    <string name="sort_by">排序:</string>
+    <string name="sort_name">名称</string>
+    <string name="sort_count">次数</string>
+    <string name="sort_time">时间</string>
+    <string name="menu_filter_all">全部</string>
+    <string name="menu_filter_blocked">已阻止</string>
+    <string name="menu_filter_allowed">已允许</string>
+    <string name="allow">允许</string>
+    <string name="screen_off">屏幕关闭</string>
+    <string name="timeout">时间</string>
+
+
+        <!-- Error handling -->
+    <string name="allow_wakelock">允许唤醒锁</string>
+    <string name="allow_wakelock_desc">允许此唤醒锁触发</string>
+    <string name="allow_alarm">允许定时器</string>
+    <string name="allow_alarm_desc">允许此定时器触发</string>
+    <string name="allow_service">允许服务</string>
+    <string name="allow_service_desc">允许此服务启动</string>
+
+    <string name="allow_screenOff_wakelock">允许唤醒锁屏幕关闭</string>
+    <string name="allow_screenOff_wakelock_desc">允许此唤醒锁在屏幕关闭时触发</string>
+    <string name="allow_screenOff_alarm">允许定时器屏幕关闭</string>
+    <string name="allow_screenOff_alarm_desc">允许此定时器在屏幕关闭时触发</string>
+    <string name="allow_screenOff_service">允许服务屏幕关闭</string>
+    <string name="allow_screenOff_service_desc">允许此服务在屏幕关闭时启动</string>
+
+    <!-- Module check strings -->
+    <string name="module_check">模块状态检查</string>
+    <string name="module_check_description">验证模块是否激活并正常工作</string>
+    <string name="check">检查</string>
+    <string name="refresh">刷新</string>
+    <string name="module_status">Xposed 状态</string>
+    <string name="hook_status">Hook状态</string>
+    <string name="config_path">配置后端</string>
+    <string name="overall_status">整体状态</string>
+    <string name="normal_status">正常</string>
+    <string name="warning_status">警告</string>
+    <string name="error_status">错误</string>
+    <string name="module_active">模块已激活</string>
+    <string name="module_inactive">模块未激活</string>
+    <string name="module_version">版本: %s</string>
+    <string name="wakelock_hook">Wakelock Hook</string>
+    <string name="alarm_hook">Alarm Hook</string>
+    <string name="service_hook">Service Hook</string>
+    <string name="hook_working">正常工作</string>
+    <string name="hook_not_working">未工作</string>
+    <string name="config_path_valid">至少一个配置后端可读取</string>
+    <string name="config_path_invalid">没有可读取的配置后端</string>
+    <string name="config_backend_active">当前后端：%s</string>
+    <string name="loading">加载中…</string>
+    <string name="error_checking_module">检查模块状态时出错</string>
+    <string name="status_normal_description">所有模块组件工作正常</string>
+    <string name="status_warning_description">模块已激活但部分Hook未工作</string>
+    <string name="status_error_description">模块未激活，或没有可读取的配置后端</string>
+    <string name="fix_module_inactive">在Xposed管理器中激活模块并重启设备</string>
+    <string name="fix_hook_not_working">重启设备以初始化Hook</string>
+    <string name="fix_config_path">打开 NoWakeLock 一次以发布配置，然后重启被 Hook 的进程或设备</string>
+    <string name="experimental_features">实验功能</string>
+    <string name="config_publish_pending">设置已保存，框架同步待完成，请查看模块检查。</string>
+    <string name="config_restore_publish_pending">备份已恢复，框架同步待完成，请查看模块检查。</string>
+    <string name="config_diagnostics">配置与拦截诊断</string>
+    <string name="config_revision_status">已发布：%1$s · 当前进程已读取：%2$s</string>
+    <string name="config_pending">等待目标进程确认</string>
+</resources>

@@ -1,0 +1,37 @@
+<b>NoWakeLock</b> - Advanced Android Power Management
+
+Take control of your Android device's power consumption by managing Wakelocks, Alarms, and Services.
+
+<b>Why NoWakeLock?</b>
+While Android 11+ background management has been significantly optimized, power users still need granular control over background activities. NoWakeLock is a targeted solution for specific battery drain problems, not a general optimization tool.
+
+<b>Key Features</b>
+
+• <b>Component Control</b> - Monitor and manage Wakelocks, Alarms, and Services
+• <b>Blocking Control</b> - Allow, limit, or block components with configurable rules
+• <b>Regex Pattern Matching</b> - Create rules using regular expressions
+• <b>Material Design 3 UI</b> - Interface built with Jetpack Compose
+• <b>Statistics</b> - Track battery impact and optimization results
+• <b>Multi-User Support</b> - Full compatibility with Android's multi-user environment
+• <b>Module Status Check</b> - Verify Xposed framework integration
+• <b>App-Level Management</b> - Configure rules per application
+
+<b>Compatibility</b>
+• Android 7.0 (API 24) to Android 15.0 (API 35)
+• Requires Xposed Framework (LSPosed recommended, EdXposed)
+• Supports ARM64 and ARM32 architectures
+• Current Version: 3.0.3 (stable release)
+• ⚠️ Samsung OneUI devices currently not supported
+
+<b>Open Source & Privacy</b>
+• Fully open source (GPL v3.0)
+• No data collection or tracking
+• All processing happens locally on your device
+
+<b>Important Disclaimer</b>
+• Use at your own risk - developers not responsible for device damage
+• Only use if you have confirmed battery drain issues through tools like BetterBatteryStats
+• Requires root access and Xposed framework
+• Advanced users recommended - configure carefully
+
+For experienced users who need targeted solutions for specific battery drain problems.
