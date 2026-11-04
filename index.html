@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>NoWakeLock Documentation</title>
+    <meta name="description" content="Comprehensive Android power management through WakeLock, Alarm, and Service control. An open-source Xposed module for optimizing battery life.">
+    <script>
+        // Language detection and redirection
+        (function() {
+            // Get browser language
+            var lang = navigator.language || navigator.userLanguage || 'en';
+            lang = lang.toLowerCase();
+            
+            // Language mapping
+            var languageMap = {
+                'zh': '/zh/',          // Chinese (Simplified)
+                'zh-cn': '/zh/',       // Chinese (Simplified)
+                'zh-hans': '/zh/',     // Chinese (Simplified)
+                'zh-tw': '/zh-tw/',    // Chinese (Traditional)
+                'zh-hant': '/zh-tw/',  // Chinese (Traditional)
+                'en': '/en/',          // English
+                'en-us': '/en/',       // English (US)
+                'en-gb': '/en/',       // English (UK)
+                'de': '/de/',          // German
+                'de-de': '/de/',       // German (Germany)
+                'fr': '/fr/',          // French
+                'fr-fr': '/fr/',       // French (France)
+            };
+            
+            // Find best match
+            var redirectPath = languageMap[lang];
+            
+            // If no exact match, try language prefix (e.g., 'zh-sg' -> 'zh')
+            if (!redirectPath) {
+                var langPrefix = lang.split('-')[0];
+                redirectPath = languageMap[langPrefix];
+            }
+            
+            // Default to Chinese if no match found
+            if (!redirectPath) {
+                redirectPath = '/zh/';
+            }
+            
+            // Redirect
+            window.location.href = '.' + redirectPath;
+        })();
+    </script>
+    <noscript>
+        <meta http-equiv="refresh" content="0; url=./zh/">
+        <link rel="canonical" href="./zh/">
+    </noscript>
+</head>
+<body>
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin-top: 100px;">
+        <h1>NoWakeLock Documentation</h1>
+        <p>Redirecting to your preferred language...</p>
+        <p>如果没有自动跳转，请点击：<a href="./zh/">简体中文</a></p>
+        <p>If not redirected automatically: <a href="./en/">English</a></p>
+        <p>Falls nicht automatisch weitergeleitet: <a href="./de/">Deutsch</a></p>
+        <p>Si vous n'êtes pas redirigé automatiquement: <a href="./fr/">Français</a></p>
+        <p>如果沒有自動跳轉：<a href="./zh-tw/">繁體中文</a></p>
+    </div>
+</body>
+</html>
